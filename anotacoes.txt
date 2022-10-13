@@ -1,0 +1,77 @@
+criação do projeto
+    composer create-project laravel/laravel nome-do-seu-projeto
+
+Instalação do inertia no laravel
+    composer require inertiajs/inertia-laravel
+
+No diretório resources/views, crie um arquivo chamado app.blade.php, e cole o seguinte código no arquivo
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+        <link href="{{ mix('/css/app.css') }}" rel="stylesheet" />
+        <script src="{{ mix('/js/app.js') }}" defer></script>
+    </head>
+    <body>
+        @inertia
+    </body>
+    </html>
+
+crie o middleware
+    php artisan inertia:middleware
+
+em Kernel.php, no array 'web' de $middlewareGroups pra registrar o middleware:
+    \App\Http\Middleware\HandleInertiaRequests::class,
+
+Instale o laravel ui (precisei do asterisco pq deu incompatibilidade)
+    composer require laravel/ui:*
+
+instale o vue
+    php artisan ui vue
+
+
+npm install
+
+se o vue mostrado no package.json não for o 3:
+    npm install --save vue@next && npm install --save-dev vue-loader@next
+
+Instalar o inertia no lado cliente
+    npm install @inertiajs/inertia @inertiajs/inertia-vue3
+
+se ocorrer erro na instalação, rode de novo com a opção --legacy-peer-deps
+
+substitua o conteudo do resources/js/app.js por
+
+    import { createApp, h } from 'vue'
+    import { createInertiaApp } from '@inertiajs/inertia-vue3'
+
+    createInertiaApp({
+    resolve: name => require(`./Pages/${name}`),
+    setup({ el, App, props, plugin }) {
+        createApp({ render: () => h(App, props) })
+        .use(plugin)
+        .mount(el)
+    },
+    })
+
+crie uma pasta "Pages" em resources/js
+
+na pasta Pages, crie Home.vue com o conteudo abaixo
+    <template>
+    <div class="container">
+        <h1>Olá {{name}}, seja bem vindo!</h1>
+    </div>
+    </template>
+    <script>
+    export default {
+        props: {
+            name: String
+        }
+    }
+    </script>
+    <style>
+    </style>
+
+crie um controller
+    php artisan make:controller HomeController
